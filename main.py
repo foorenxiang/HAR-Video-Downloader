@@ -37,6 +37,8 @@ def download_file(url: str, download_directory: Path) -> str:
     local_filename = url.split("/")[-1]
     downloading_path = download_directory / f"{local_filename}.download"
     downloaded_path = download_directory / local_filename
+    if downloaded_path.exists():
+        return local_filename
     with requests.get(url, stream=True) as r:
         r.raise_for_status()
         with open(
