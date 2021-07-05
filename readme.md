@@ -2,6 +2,8 @@
 
 ## Downloading videos split up into many xhr requests
 
+Download strategy opts to redownload filtered xhr uris found in the HAR file rather than directly using captured responses as not all initial requests may be successful
+
 ### Installation
 
 1. cd to project root
