@@ -59,6 +59,7 @@ def download_urls(urls: list, download_directory: Path) -> None:
 def download_videos(list_of_har_files) -> None:
     for har_file in list_of_har_files:
         har_filename = get_har_filename(har_file)
+        print(f"Downloading {har_filename}")
         with open(har_file, "r") as fp:
             data = fp.readlines()
         video_urls = [
@@ -66,6 +67,7 @@ def download_videos(list_of_har_files) -> None:
         ]
         output_dir = make_output_directory(har_filename)
         download_urls(video_urls, output_dir)
+    print("Downloads complete")
 
 
 def list_video_parts(video_path: Path) -> List:
@@ -77,6 +79,7 @@ def list_video_parts(video_path: Path) -> List:
 
 
 def combine_videos() -> None:
+    print("Combining videos")
     video_file_paths = [
         path
         for path in Path(OUTPUT_DIR).glob("*")
@@ -103,6 +106,7 @@ def convert_combined_videos_to_mp4() -> None:
     print(combined_videos)
     print(output_videos)
     for input_video, output_video in zip(combined_videos, output_videos):
+        print(f"Converting {output_video}")
         subprocess.run(["ffmpeg", "-i", str(input_video), str(output_video)])
 
 
