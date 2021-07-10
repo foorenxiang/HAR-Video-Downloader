@@ -1,12 +1,14 @@
 import requests
 import time
 from pathlib import Path
+import subprocess
 
 ### Mandatory Settings
 url_template = lambda number: f"http://thedomain/static_url-{number}.ts"
 starting_from_part_number = 1
 CLIP_DURATION_IN_SECONDS = 2
 MIN_FILE_SIZE_IN_BYTES = 150 * 1024
+TS_FILENAME = "./outputs/livestream.ts"
 ###
 
 DOWNLOAD_FOLDER = "livestream_download"
@@ -38,5 +40,27 @@ def download(starting_part_number):
         time.sleep(CLIP_DURATION_IN_SECONDS)
 
 
+def get_mp4_filename():
+    MP4_FILENAME = TS_FILENAME.replace(".ts", ".mp4")
+    return MP4_FILENAME
+
+
+def get_ts_parts():
+    video_parts = tuple(sorted(Path("livestream_download").glob("*.ts")))
+    return video_parts
+
+
+def convert_ts_to_mp4():
+    MP4_FILENAME = get_mp4_filename()
+    video_parts = get_ts_parts()
+    with open(TS_FILENAME, "wb") as wfp:
+        for video_part in video_parts:
+            with open(video_part, "rb") as rfp:
+                wfp.write(rfp.read())
+    subprocess.run(["ffmpeg", "-i", TS_FILENAME, MP4_FILENAME])
+
+
+convert_ts_to_mp4()
 if __name__ == "__main__":
     download(starting_from_part_number)
+    convert_ts_to_mp4()
