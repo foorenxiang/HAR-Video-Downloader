@@ -5,6 +5,8 @@ import os
 import subprocess
 import time
 
+from requests.models import HTTPError
+
 OUTPUT_DIR = "outputs"
 DOWNLOADED_VIDEO_EXTENSION = ".ts"
 CONVERTED_FILE_EXTENSION = ".mp4"
@@ -20,8 +22,11 @@ def get_har_filename(har_file: Path) -> str:
 
 def extract_url(line: str) -> str:
     components = line.split('"')
+
     for component in components:
-        if DOWNLOADED_VIDEO_EXTENSION in component:
+        if "?" in component:
+            component = component.split("?")[0]
+        if component.endswith(DOWNLOADED_VIDEO_EXTENSION):
             return component
 
 
@@ -34,20 +39,27 @@ def make_output_directory(har_filename: str) -> Path:
 
 
 def download_file(url: str, download_directory: Path) -> str:
+    if not url:
+        return
     local_filename = url.split("/")[-1]
     downloading_path = download_directory / f"{local_filename}.download"
     downloaded_path = download_directory / local_filename
     if downloaded_path.exists():
         return local_filename
-    with requests.get(url, stream=True) as r:
-        r.raise_for_status()
-        with open(
-            downloading_path,
-            "wb",
-        ) as f:
-            for chunk in r.iter_content(chunk_size=8192):
-                f.write(chunk)
-    os.rename(downloading_path, downloaded_path)
+
+    try:
+        with requests.get(url, stream=True) as r:
+            r.raise_for_status()
+            with open(
+                downloading_path,
+                "wb",
+            ) as f:
+                for chunk in r.iter_content(chunk_size=8192):
+                    f.write(chunk)
+        os.rename(downloading_path, downloaded_path)
+    except requests.exceptions.MissingSchema:
+        pass
+
     return local_filename
 
 
