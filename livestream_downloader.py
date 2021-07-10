@@ -6,6 +6,7 @@ from pathlib import Path
 url_template = lambda number: f"http://thedomain/static_url-{number}.ts"
 starting_from_part_number = 1
 CLIP_DURATION_IN_SECONDS = 2
+MIN_FILE_SIZE_IN_BYTES = 150 * 1024
 ###
 
 DOWNLOAD_FOLDER = "livestream_download"
@@ -32,7 +33,7 @@ def download(starting_part_number):
     while True:
         filename = download_part(url_template(number))
         number += 1
-        if Path(filename).stat().st_size() < 200:
+        if Path(filename).stat().st_size() < MIN_FILE_SIZE_IN_BYTES:
             break
         time.sleep(CLIP_DURATION_IN_SECONDS)
 
