@@ -2,10 +2,14 @@ import requests
 import time
 from pathlib import Path
 
+### Mandatory Settings
+url_template = lambda number: f"http://thedomain/static_url-{number}.ts"
+starting_from_part_number = 1
 CLIP_DURATION_IN_SECONDS = 2
+###
+
 DOWNLOAD_FOLDER = "livestream_download"
 Path(DOWNLOAD_FOLDER).mkdir(exist_ok=True)
-url_template = lambda number: f"http://thedomain/static_url-{number}.ts"
 
 
 def download_part(url):
@@ -33,4 +37,5 @@ def download(starting_part_number):
         time.sleep(CLIP_DURATION_IN_SECONDS)
 
 
-download(1)
+if __name__ == "__main__":
+    download(starting_from_part_number)
