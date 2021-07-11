@@ -1,3 +1,5 @@
+# https://stackoverflow.com/questions/52591553/how-to-use-ffmpeg-with-gpu-support-on-macos
+
 import requests
 import time
 from pathlib import Path

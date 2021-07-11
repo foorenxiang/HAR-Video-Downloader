@@ -1,3 +1,5 @@
+# https://stackoverflow.com/questions/52591553/how-to-use-ffmpeg-with-gpu-support-on-macos
+
 from pathlib import Path
 from typing import List
 import requests
@@ -10,6 +12,7 @@ from requests.models import HTTPError
 OUTPUT_DIR = "outputs"
 DOWNLOADED_VIDEO_EXTENSION = ".ts"
 CONVERTED_FILE_EXTENSION = ".mp4"
+CONVERSION_BITRATE = "6000K"
 
 
 def get_har_filepaths() -> Path:
@@ -119,7 +122,16 @@ def convert_combined_videos_to_mp4() -> None:
     print(output_videos)
     for input_video, output_video in zip(combined_videos, output_videos):
         print(f"Converting {output_video}")
-        subprocess.run(["ffmpeg", "-i", str(input_video), str(output_video)])
+        subprocess.run(
+            [
+                "ffmpeg",
+                "-i",
+                str(input_video),
+                "-c:v h264_videotoolbox",
+                f"-b:v {CONVERSION_BITRATE}",
+                str(output_video),
+            ]
+        )
 
 
 if __name__ == "__main__":
