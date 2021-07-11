@@ -6,10 +6,11 @@ Download strategy opts to redownload filtered xhr uris found in the HAR file rat
 
 ### Installation
 
-1. cd to project root
-2. python3 -m venv venv
-3. source venv/bin/activate
-4. pip3 install requirements.txt
+1. Install ffmpeg <https://ffmpeg.org/download.html>
+2. cd to project root
+3. python3 -m venv venv
+4. source venv/bin/activate
+5. pip3 install requirements.txt
 
 ### Instructions
 
