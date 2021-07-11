@@ -9,6 +9,7 @@ starting_from_part_number = 1
 CLIP_DURATION_IN_SECONDS = 2
 MIN_FILE_SIZE_IN_BYTES = 150 * 1024
 TS_FILENAME = "./outputs/livestream.ts"
+CONVERSION_BITRATE = "6000K"
 ###
 
 DOWNLOAD_FOLDER = "livestream_download"
@@ -57,7 +58,16 @@ def convert_ts_to_mp4():
         for video_part in video_parts:
             with open(video_part, "rb") as rfp:
                 wfp.write(rfp.read())
-    subprocess.run(["ffmpeg", "-i", TS_FILENAME, MP4_FILENAME])
+    subprocess.run(
+        [
+            "ffmpeg",
+            "-i",
+            TS_FILENAME,
+            "-c:v h264_videotoolbox",
+            f"-b:v {CONVERSION_BITRATE}",
+            MP4_FILENAME,
+        ]
+    )
 
 
 convert_ts_to_mp4()
